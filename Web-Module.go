@@ -120,6 +120,7 @@ func getPageContent(port int, address, Protocol, HTTP_Method, req_BodyText, h1, 
 	url := strings.Join([]string{address, ":", strconv.Itoa(port)}, "") //Combinding Protocol:ip:port
 	var query = []byte(req_BodyText)                                    //Request Body Text
 	req, err := http.NewRequest(strings.ToUpper(HTTP_Method), url, bytes.NewBuffer(query))
+	req.Close = true
 	//req.Header.Set("Cookies", "text/plain")   //Static Request Header
 	req.Header.Set("User-Agent", "Firefox") //Static Request Header
 	req.Header.Set(h1, v1)
