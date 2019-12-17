@@ -168,7 +168,7 @@ func FirstRequest(address string) error {
 		respBody, err := ioutil.ReadAll(resp.Body)
 		resp.Body.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal(err) //Getting Unexpected EOF here, within this IF statement, we can print the response body fine, but will error out after this line.
 		}
 		resp_Body := string(respBody[:])   // Response Body, to print: //fmt.Println(resp_Body)
 		resp_StatusCode := resp.StatusCode // 200 / 500 ect
