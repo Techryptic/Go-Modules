@@ -118,14 +118,14 @@ func readFile(path string) ([]string, error) {
 	return array, nil
 }
 
-func getPageContent(port int, address, Protocol, HTTP_Method, req_BodyText, h1, v1, h2, v2 string) (*http.Response, error) {
+func getPageContent(port int, url, address, Protocol, HTTP_Method, req_BodyText, h1, v1, h2, v2 string) (*http.Response, error) {
 	//This bit will take first priority of the protocol supplied in the argument before the one set in the request
 	if !strings.Contains(address, "://") {
 		address = (Protocol + "://" + address)
 	}
-	url := strings.Join([]string{address, ":", strconv.Itoa(port)}, "") //Combinding Protocol:ip:port
+	fullurl := strings.Join([]string{address, ":", strconv.Itoa(port)}, url, "") //Combinding Protocol:ip:port
 	var query = []byte(req_BodyText)                                    //Request Body Text
-	req, err := http.NewRequest(strings.ToUpper(HTTP_Method), url, bytes.NewBuffer(query))
+	req, err := http.NewRequest(strings.ToUpper(HTTP_Method), fullurl, bytes.NewBuffer(query))
 	req.Close = true
 	//req.Header.Set("Cookies", "text/plain")   //Static Request Header
 	req.Header.Set("User-Agent", "Firefox") //Static Request Header
@@ -156,15 +156,19 @@ func getPageContent(port int, address, Protocol, HTTP_Method, req_BodyText, h1, 
 }
 
 func FirstRequest(address, credz string) error {
+    	credz := strings.Split(credz, ":")
+   	_ = credz[0] //user
+	_ = credz[1] //pass
 
 	Protocol := "http" //http or https
 	port := 80
+	url := "/"
 	HTTP_Method := "get"
 	req_BodyText := "Body Text"
 	h1, v1 := "Accept-Encoding", "gzip, deflate" //Request Header & Value
 	h2, v2 := "Content-Type", "text/plain"       //Request Header & Value
 
-	resp, err := getPageContent(port, address, Protocol, HTTP_Method, req_BodyText, h1, v1, h2, v2) //Sending Contents to getPageContent func
+	resp, err := getPageContent(port, url, address, Protocol, HTTP_Method, req_BodyText, h1, v1, h2, v2) //Sending Contents to getPageContent func
 	if err != nil {
 		//log.Fatal(err)
 		//fmt.Printf("Server not responding %s\n", err.Error()) //Catch-all errors
